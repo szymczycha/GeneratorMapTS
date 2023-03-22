@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>:)</title>
     <style>
         *{
             margin: 0;
@@ -24,17 +24,23 @@
         }
         
         #map{
-            width: 520px;
-            height: 520px;
+            width: 1175px;
+            height: 1000px;
             margin-left: 100px;
-            display: flex;
-            flex-wrap: wrap;
+            /* display: flex;
+            flex-wrap: wrap; */
+            display: grid;
+            grid-template-columns: repeat(45, 25px);
+            grid-template-rows: repeat(40, 25px);
         }
         #map canvas{
-            border: 1px dashed white;
+            border: 1px dotted white;
             margin: 0.5px;
             width: 25px;
             height: 25px;
+        }
+        #map canvas.selected{
+            border: 1px dotted red;
         }
         #map canvas:hover{
             opacity: 100%;
@@ -42,7 +48,7 @@
         }
         #sprites canvas{
             opacity: 50%;
-            border: 1px dashed white;
+            border: 1px dotted white;
             margin: 0.5px;
             width: 25px;
             height: 25px;

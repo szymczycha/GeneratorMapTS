@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.0.2",
+    "webpack": "^5.76.2",
+    "webpack-cli": "^5.0.1"
+  },
+  "name": "generatormapts",
+  "version": "1.0.0",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --mode development",
+    "prod": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/szymczycha/GeneratorMapTS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/szymczycha/GeneratorMapTS/issues"
+  },
+  "homepage": "https://github.com/szymczycha/GeneratorMapTS#readme",
+  "description": ""
+}
