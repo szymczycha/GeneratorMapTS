@@ -8,18 +8,37 @@ export class MapSquare implements Square {
     public arrayJ: number;
     public selected: boolean;
     public selection: MapSelection;
-    constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, arrayI: number, arrayJ: number, selection: MapSelection) {
-        this.canvas = canvas;
-        this.selected = false;
-        this.selection = selection
+    constructor(canvas: HTMLCanvasElement = null,
+        context: CanvasRenderingContext2D = null,
+        arrayI: number = null,
+        arrayJ: number = null,
+        selection: MapSelection = null, 
+        copySquare: MapSquare = null) {
+        if(copySquare != null){ //jezeli kopiuje
+            this.canvas = copySquare.canvas;
+            this.selected = copySquare.selected;
+            this.selection = copySquare.selection;
+            this.context = copySquare.context
+            // this.context.putImageData(copySquare.context.getImageData(0,0,25,25), 0,0);
+            this.arrayI = copySquare.arrayI;
+            this.arrayJ = copySquare.arrayJ;
+            
+        }else{
+            this.canvas = canvas;
+            this.selected = false;
+            this.selection = selection
+            this.context = context;
+            this.arrayI = arrayI;
+            this.arrayJ = arrayJ;
+        }
         this.canvas.addEventListener("mousedown", (event: MouseEvent) => {
             if(selection && !event.ctrlKey){
-                deselectAll();
+                selection.deselectAll();
             }
             selection.firstSquare = this;
         })
         this.canvas.addEventListener("mouseup", (event: MouseEvent) => {
-            secondSquare = this;
+            let secondSquare = this;
             if(event.ctrlKey){
                 selection.addSprites(selection.firstSquare, secondSquare);
             }else{
@@ -28,9 +47,6 @@ export class MapSquare implements Square {
                 // selection = new MapSelection(selection.firstSquare, secondSquare);
             }
         })
-        this.context = context;
-        this.arrayI = arrayI;
-        this.arrayJ = arrayJ;
     }
     setSprite(sprite: SpriteSquare){
         this.context.putImageData(sprite.context.getImageData(0,0,25,25), 0, 0);
