@@ -4,6 +4,7 @@ import { MapSquare } from "./MapSquare";
 import { MapSelection } from "./MapSelection";
 import { MapState } from "./MapState";
 import { MapHistory } from "./MapHistory";
+import { SelectionDiv } from "./SelectionDiv";
 let mapSizeLeftRight = 45;
 let mapSizeTopBottom = 40;
 
@@ -18,23 +19,39 @@ let selection: MapSelection = new MapSelection(mapHistory);
 let spritesContainer: HTMLDivElement = document.getElementById("sprites") as HTMLDivElement;
 let mapContainer: HTMLDivElement = document.getElementById("map") as HTMLDivElement
 let image = new Image();
+let selectionDiv = new SelectionDiv();
 image.src = "sprites.png";
 
 function undo(){
+    console.log("undo");
     let undoMapState: MapState = mapHistory.pop();
     mapState.load(undoMapState);
 }
 
+function redo(){
+    console.log("redo");
+    let redoMapState: MapState = mapHistory.getNext();
+    mapState.load(redoMapState);
+}
 document.addEventListener("keydown", ev => {
-    console.log(ev.key)
-    console.log(ev.ctrlKey)
     if(ev.key === 'z' && ev.ctrlKey){
         undo();
+    }else if(ev.key === 'y' && ev.ctrlKey){
+        redo();
     }
 })
 console.log("sdsdfasdfa")
 
 image.onload = function () {
+    document.addEventListener("mousedown", (ev: MouseEvent)=>{
+        selectionDiv.startSelect(ev.pageX, ev.pageY);
+    })
+    document.addEventListener("mousemove", (ev: MouseEvent) => {
+        selectionDiv.moveTo(ev.pageX, ev.pageY);
+    })
+    document.addEventListener("mouseup", (ev: MouseEvent) =>{
+        selectionDiv.endSelect();
+    })
     for (let i = 0; i < 20; i++) {
         let row: SpriteSquare[] = [];
         for (let j = 0; j < 16; j++) {
@@ -67,9 +84,10 @@ image.onload = function () {
         let row: MapSquare[] = [];
         for (let i = 0; i < mapSizeLeftRight; i++) {
             let canvas = document.createElement("canvas") as HTMLCanvasElement;
+            canvas.setAttribute("willReadFrequently", "true");
             canvas.width = 25;
             canvas.height = 25;
-            let context = canvas.getContext("2d") as CanvasRenderingContext2D;
+            let context = canvas.getContext("2d", {willReadFrequently: true}) as CanvasRenderingContext2D;
             mapContainer.appendChild(canvas);
             let tile = new MapSquare(canvas, context, i, j, selection);
             row.push(tile);

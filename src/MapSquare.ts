@@ -8,6 +8,7 @@ export class MapSquare implements Square {
     public arrayJ: number;
     public selected: boolean;
     public selection: MapSelection;
+    public imageData: ImageData;
     constructor(canvas: HTMLCanvasElement = null,
         context: CanvasRenderingContext2D = null,
         arrayI: number = null,
@@ -22,7 +23,7 @@ export class MapSquare implements Square {
             // this.context.putImageData(copySquare.context.getImageData(0,0,25,25), 0,0);
             this.arrayI = copySquare.arrayI;
             this.arrayJ = copySquare.arrayJ;
-            
+            this.imageData = this.canvas.getContext("2d").getImageData(0,0,25,25);
         }else{
             this.canvas = canvas;
             this.selected = false;
@@ -30,26 +31,27 @@ export class MapSquare implements Square {
             this.context = context;
             this.arrayI = arrayI;
             this.arrayJ = arrayJ;
+            this.imageData = this.canvas.getContext("2d").getImageData(0,0,25,25);
         }
         this.canvas.addEventListener("mousedown", (event: MouseEvent) => {
-            if(selection && !event.ctrlKey){
-                selection.deselectAll();
+            if(this.selection && !event.ctrlKey){
+                this.selection.deselectAll();
             }
-            selection.firstSquare = this;
+            this.selection.setFirstSquare(this);
         })
         this.canvas.addEventListener("mouseup", (event: MouseEvent) => {
             let secondSquare = this;
-            if(event.ctrlKey){
-                selection.addSprites(selection.firstSquare, secondSquare);
-            }else{
-                selection.empty();
-                selection.addSprites(selection.firstSquare, secondSquare);
-                // selection = new MapSelection(selection.firstSquare, secondSquare);
+            if(!event.ctrlKey){
+                this.selection.empty();
             }
+            this.selection.toggleSprites(this.selection.firstSquare, secondSquare);
         })
     }
     setSprite(sprite: SpriteSquare){
         this.context.putImageData(sprite.context.getImageData(0,0,25,25), 0, 0);
+    }
+    setImageData(imageData: ImageData){
+        this.context.putImageData(imageData, 0, 0);
     }
     select() {
         this.selected = true;

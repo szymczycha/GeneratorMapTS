@@ -15,9 +15,9 @@ export class MapState{
         }
     }
     load(state: MapState){
-        state.mapSquares.forEach(row => {
-            row.forEach(element => {
-                element.context.putImageData(element.context.getImageData(0,0,25,25),0,0)
+        state.mapSquares.forEach((row, i) => {
+            row.forEach((element, j) => {
+                this.mapSquares[i][j].setImageData(element.imageData);
             });
         });
     }

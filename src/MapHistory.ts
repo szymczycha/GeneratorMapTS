@@ -1,16 +1,29 @@
 import { MapState } from "./MapState";
 export class MapHistory{
     history: MapState[];
+    currentIndex: number = 0;
     constructor(){
+        this.currentIndex = -1;
         this.history = [];
     }
     getCurrent(): MapState{
-        return this.history[this.history.length-1];
+        return this.history[this.currentIndex];
+    }
+    getNext(): MapState{
+        console.log(this.history, this.currentIndex)
+        if(this.currentIndex + 1 <= this.history.length - 1){
+            this.currentIndex += 1;
+        }
+        return this.getCurrent();
     }
     pop(): MapState{
-        return this.history.pop();
+        if(this.currentIndex > 0){
+            this.currentIndex -= 1;
+        }
+        return this.getCurrent();
     }
     add(state: MapState): void{
-        this.history.push(state);
+        this.currentIndex += 1;
+        this.history.splice(this.currentIndex,this.history.length,state);
     }
 }

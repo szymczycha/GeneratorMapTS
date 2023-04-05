@@ -15,9 +15,11 @@ export class SpriteSquare implements Square {
         this.mapHistory = mapHistory
         this.canvas.onclick = () => {
             //cale zaznaczenie ustaw na dany sprite
-            selection.setSprites(this);
-            selection.deselectAll();
-            mapHistory.add(new MapState(mapHistory.getCurrent()));
+            if(!this.selection.isEmpty()){
+                this.selection.setSprites(this);
+                this.selection.deselectAll();
+                mapHistory.add(new MapState(mapHistory.getCurrent()));
+            }
         };
         this.context = context;
         this.arrayI = arrayI;
