@@ -62,6 +62,10 @@ function copy() {
 function paste() {
     selection.paste();
 }
+function cut() {
+    copy();
+    deleteSquares();
+}
 console.log("sdsdfasdfa")
 
 image.onload = function () {
@@ -76,6 +80,8 @@ image.onload = function () {
             copy();
         } else if (ev.key === 'v' && (ev.ctrlKey || ev.metaKey)) {
             paste();
+        } else if (ev.key === 'x' && (ev.ctrlKey || ev.metaKey)) {
+            cut();
         }
     })
     document.addEventListener("mousedown", (ev: MouseEvent) => {
