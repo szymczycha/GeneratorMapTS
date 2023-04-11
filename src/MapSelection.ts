@@ -5,28 +5,18 @@ import { MapHistory } from "./MapHistory";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "../node_modules/typescript/lib/typescript";
 export class MapSelection {
     selectedMapSquares: MapSquare[];
+    copiedSquares: MapSquare[];
     topLeftMapSquare: MapSquare;
     bottomRightMapSquare: MapSquare;
     firstSquare: MapSquare;
     secondSquare: MapSquare;
     stateHistory: MapHistory;
+    isCopying: boolean;
     constructor(stateHistory: MapHistory) {
         this.stateHistory = stateHistory;
         this.selectedMapSquares = [];
-        // this.selectedMapSquares = [];
-        // let topLeftI: number = Math.min(firstSquare.arrayI, secondSquare.arrayI);
-        // let topLeftJ: number = Math.min(firstSquare.arrayJ, secondSquare.arrayJ);
-        // let bottomRightI: number = Math.max(firstSquare.arrayI, secondSquare.arrayI);
-        // let bottomRightJ: number = Math.max(firstSquare.arrayJ, secondSquare.arrayJ);
-        // this.topLeftMapSquare = state.mapSquares[topLeftI][topLeftJ];
-        // this.bottomRightMapSquare = state.mapSquares[bottomRightI][bottomRightJ];
-        // console.log(topLeftI, topLeftJ, bottomRightI, bottomRightJ);
-        // for (let j = topLeftJ; j <= bottomRightJ; j++) {
-        //     for (let i = topLeftI; i <= bottomRightI; i++) {
-        //         this.selectedMapSquares.push(state.mapSquares[j][i])
-        //         state.mapSquares[j][i].select();
-        //     }
-        // }
+        this.isCopying = false;
+        this.copiedSquares = [];
     }
     isEmpty() {
         return this.selectedMapSquares.length == 0;
@@ -58,6 +48,32 @@ export class MapSelection {
     }
     isAutomat() {
         return (document.getElementById("automat") as HTMLInputElement).checked == true;
+    }
+    copy() {
+        this.isCopying = true;
+        this.copiedSquares = this.selectedMapSquares;
+    }
+    paste() {
+        if (!this.isEmpty()) {
+            let firstCopiedSquare = this.copiedSquares[0];
+            let toSquare = this.selectedMapSquares[0];
+            console.log(firstCopiedSquare);
+            console.log(toSquare);
+
+            let iDiff = toSquare.arrayI - firstCopiedSquare.arrayI;
+            let jDiff = toSquare.arrayJ - firstCopiedSquare.arrayJ;
+
+            this.copiedSquares.forEach((mapSquare: MapSquare) => {
+                let newI = mapSquare.arrayI + iDiff;
+                let newJ = mapSquare.arrayJ + jDiff;
+                if (newI < MapSquare.iSize && newJ < MapSquare.jSize) {
+                    this.stateHistory.getCurrent().mapSquares[newJ][newI].setImageData(mapSquare.imageData);
+                }
+            });
+            this.stateHistory.add(new MapState(this.stateHistory.getCurrent()));
+            this.deselectAll();
+        }
+        this.isCopying = false;
     }
     toggleSprites(firstSquare: MapSquare, secondSquare: MapSquare) {
         console.log("toggleSprites");

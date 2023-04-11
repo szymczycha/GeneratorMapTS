@@ -5,6 +5,9 @@ import { MapSelection } from "./MapSelection";
 import { MapState } from "./MapState";
 import { MapHistory } from "./MapHistory";
 import { SelectionDiv } from "./SelectionDiv";
+
+// nie jestem z tego wszystkiego dumny
+
 let mapSizeLeftRight = 45;
 let mapSizeTopBottom = 40;
 
@@ -21,43 +24,58 @@ let mapContainer: HTMLDivElement = document.getElementById("map") as HTMLDivElem
 let image = new Image();
 let selectionDiv = new SelectionDiv();
 image.src = "sprites.png";
+let deleteCanvas = document.createElement("canvas") as HTMLCanvasElement;
+let deleteSpriteSquare = new SpriteSquare(
+    deleteCanvas,
+    deleteCanvas.getContext("2d"),
+    -1,
+    -1,
+    selection,
+    mapHistory
+);
 function undo() {
     console.log("undo");
     let undoMapState: MapState = mapHistory.pop();
     mapState.load(undoMapState);
 }
+function deleteSquares() {
 
+    if (!selection.isEmpty()) { // lol 
+        selection.setSprites(deleteSpriteSquare);
+        selection.deselectAll();
+        mapHistory.add(new MapState(mapHistory.getCurrent()));
+        if (selection.isAutomat()) {
+            selection.doAutomat();
+        }
+    }
+}
 function redo() {
     console.log("redo");
     let redoMapState: MapState = mapHistory.getNext();
     mapState.load(redoMapState);
 }
+function copy() {
+    console.log("copy");
+    selection.copy();
+
+}
+function paste() {
+    selection.paste();
+}
 console.log("sdsdfasdfa")
 
 image.onload = function () {
-    let deleteCanvas = document.createElement("canvas") as HTMLCanvasElement;
-    let deleteSpriteSquare = new SpriteSquare(
-        deleteCanvas,
-        deleteCanvas.getContext("2d"),
-        -1,
-        -1,
-        selection,
-        mapHistory)
     document.addEventListener("keydown", ev => {
         if (ev.key === 'z' && (ev.ctrlKey || ev.metaKey)) {
             undo();
         } else if (ev.key === 'y' && (ev.ctrlKey || ev.metaKey)) {
             redo();
         } else if (ev.key === 'Delete') {
-
-            if (!selection.isEmpty()) {
-                selection.setSprites(deleteSpriteSquare);
-                selection.deselectAll();
-                mapHistory.add(new MapState(mapHistory.getCurrent()));
-                if (selection.isAutomat()) {
-                    selection.doAutomat();
-                }
-            }
+            deleteSquares();
+        } else if (ev.key === 'c' && (ev.ctrlKey || ev.metaKey)) {
+            copy();
+        } else if (ev.key === 'v' && (ev.ctrlKey || ev.metaKey)) {
+            paste();
         }
     })
     document.addEventListener("mousedown", (ev: MouseEvent) => {
