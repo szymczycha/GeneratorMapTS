@@ -1,29 +1,45 @@
 import { MapState } from "./MapState";
-export class MapHistory{
+export class MapHistory {
     history: MapState[];
     currentIndex: number = 0;
-    constructor(){
+    constructor() {
         this.currentIndex = -1;
         this.history = [];
     }
-    getCurrent(): MapState{
+    /**
+     * 
+     * @returns aktualny stan mapy
+     */
+    getCurrent(): MapState {
         return this.history[this.currentIndex];
     }
-    getNext(): MapState{
+    /**
+     * tzw "redo" 
+     * @returns zwraca aktualny stan mapy po przesunięciu
+     */
+    getNext(): MapState {
         console.log(this.history, this.currentIndex)
-        if(this.currentIndex + 1 <= this.history.length - 1){
+        if (this.currentIndex + 1 <= this.history.length - 1) {
             this.currentIndex += 1;
         }
         return this.getCurrent();
     }
-    pop(): MapState{
-        if(this.currentIndex > 0){
+    /**
+     * tzw "undo"
+     * @returns zwraca aktualny stan mapy po przesunięciu
+     */
+    pop(): MapState {
+        if (this.currentIndex > 0) {
             this.currentIndex -= 1;
         }
         return this.getCurrent();
     }
-    add(state: MapState): void{
+    /**
+     * dodaje nowy stan mapy do historii
+     * @returns void
+     */
+    add(state: MapState): void {
         this.currentIndex += 1;
-        this.history.splice(this.currentIndex,this.history.length,state);
+        this.history.splice(this.currentIndex, this.history.length, state);
     }
 }

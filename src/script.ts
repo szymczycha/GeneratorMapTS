@@ -66,9 +66,61 @@ function cut() {
     copy();
     deleteSquares();
 }
+function save(filename: string, type: string) {
+    let imgDataArray = [] as Array<Array<Uint8ClampedArray>>
+    let mapItems = mapHistory.getCurrent().mapSquares;
+    mapItems.forEach(e => {
+        let array = [] as Array<Uint8ClampedArray>
+        for (let i = 0; i < 30; i++) {
+            if (e[i].imageData == null) array.push(null)
+            else array.push(e[i].imageData.data)
+        }
+        imgDataArray.push(array)
+    })
+    console.log(imgDataArray);
+    let data = JSON.stringify(imgDataArray)
+    const blob = new Blob([data], { type: type });
+    console.log(blob);
+
+    const url = URL.createObjectURL(blob);
+    console.log(url);
+
+    const link = document.createElement("a");
+    link.innerText = "save";
+    link.download = filename;
+
+    let reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onload = function () {
+        link.href = reader.result as string;
+        link.click();
+    };
+}
 console.log("sdsdfasdfa")
 
 image.onload = function () {
+    document.getElementById("file").addEventListener("change", async (ev) => {
+        console.log("load")
+        let fileList: FileList | null = (ev.target as HTMLInputElement).files;
+        let file: File | null = fileList?.item(0);
+        let text = await file.text();
+        let json: Array<Array<Uint8ClampedArray>> = JSON.parse(text) as Array<Array<Uint8ClampedArray>>;
+        let state = new MapState(mapHistory.getCurrent());
+        json.forEach((e, i) => {
+            e.forEach((f, j) => {
+                let mapItem = state.mapSquares[i][j];
+                if (f != null) {
+                    let idata = mapItem.context.createImageData(25, 25);
+                    for (var k = 0; k < idata.data.length; k++) {
+                        idata.data[k] = f[k];
+                    }
+                    mapItem.imageData = idata
+                    // mapItem.context.putImageData(idata, 0, 0)
+                }
+            })
+        })
+        mapHistory.getCurrent().load(state);
+    })
     document.addEventListener("keydown", ev => {
         if (ev.key === 'z' && (ev.ctrlKey || ev.metaKey)) {
             undo();
@@ -81,6 +133,10 @@ image.onload = function () {
         } else if (ev.key === 'v' && (ev.ctrlKey || ev.metaKey)) {
             paste();
         } else if (ev.key === 'x' && (ev.ctrlKey || ev.metaKey)) {
+            cut();
+        } else if (ev.key === 'q' && (ev.ctrlKey || ev.metaKey)) {
+            save("data.json", "application/json");
+        } else if (ev.key === 'l' && (ev.ctrlKey || ev.metaKey)) {
             cut();
         }
     })
@@ -146,7 +202,6 @@ image.onload = function () {
             canvas.height = 25;
             let context = canvas.getContext("2d", { willReadFrequently: true }) as CanvasRenderingContext2D;
             mapContainer.appendChild(canvas);
-            console.log(selection)
             let tile = new MapSquare(canvas, context, i, j, selection);
             row.push(tile);
         }

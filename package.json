@@ -23,5 +23,8 @@
     "url": "https://github.com/szymczycha/GeneratorMapTS/issues"
   },
   "homepage": "https://github.com/szymczycha/GeneratorMapTS#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "typedoc": "^0.24.1"
+  }
 }
