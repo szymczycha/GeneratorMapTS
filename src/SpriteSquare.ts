@@ -19,6 +19,9 @@ export class SpriteSquare implements Square {
                 this.selection.setSprites(this);
                 this.selection.deselectAll();
                 mapHistory.add(new MapState(mapHistory.getCurrent()));
+                if(this.selection.isAutomat()){
+                    this.selection.doAutomat();
+                }
             }
         };
         this.context = context;

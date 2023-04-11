@@ -1,29 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>:)</title>
     <style>
-        *{
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        body{
+
+        body {
+            color: white;
             background-color: black;
             display: flex;
             flex-direction: row;
             width: 100%;
         }
-        #sprites{
+
+        #sprites {
             width: 416px;
             display: flex;
             flex-wrap: wrap;
         }
-        
-        #map{
+
+        #map {
             width: 1175px;
             height: 1000px;
             margin-left: 100px;
@@ -33,40 +37,51 @@
             grid-template-columns: repeat(45, 25px);
             grid-template-rows: repeat(40, 25px);
         }
-        #map canvas{
+
+        #map canvas {
             border: 1px dotted white;
             margin: 0.5px;
             width: 25px;
             height: 25px;
         }
-        #map canvas.selected{
+
+        #map canvas.selected {
             border: 1px dotted red;
         }
-        #map canvas:hover{
+
+        #map canvas:hover {
             opacity: 100%;
             border: 2px dashed cyan;
         }
-        #sprites canvas{
+
+        #sprites canvas {
             opacity: 50%;
             border: 1px dotted white;
             margin: 0.5px;
             width: 25px;
             height: 25px;
         }
-        #sprites canvas:hover{
+
+        #sprites canvas:hover {
             opacity: 100%;
             border: 1px dashed cyan;
         }
     </style>
     <script defer src="dist/script.bundle.js"></script>
 </head>
+
 <body>
     <div id="sprites">
 
     </div>
-    <div id="map">
+    <div style="display: flex; flex-direction: column;">
+        <p style="user-select: none;">Automat: <input type="checkbox" name="automat" id="automat"></p>
+        <div id="map">
 
+        </div>
     </div>
-    <div id="selectionDiv" style="position: absolute; width: 0; height: 0; background-color: rgba(255, 0, 0, 0.5);"></div>
+    <div id="selectionDiv" style="position: absolute; width: 0; height: 0; background-color: rgba(255, 0, 0, 0.5);">
+    </div>
 </body>
+
 </html>

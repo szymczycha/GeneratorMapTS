@@ -33,19 +33,6 @@ export class MapSquare implements Square {
             this.arrayJ = arrayJ;
             this.imageData = this.canvas.getContext("2d").getImageData(0,0,25,25);
         }
-        this.canvas.addEventListener("mousedown", (event: MouseEvent) => {
-            if(this.selection && !event.ctrlKey){
-                this.selection.deselectAll();
-            }
-            this.selection.setFirstSquare(this);
-        })
-        this.canvas.addEventListener("mouseup", (event: MouseEvent) => {
-            let secondSquare = this;
-            if(!event.ctrlKey){
-                this.selection.empty();
-            }
-            this.selection.toggleSprites(this.selection.firstSquare, secondSquare);
-        })
     }
     setSprite(sprite: SpriteSquare){
         this.context.putImageData(sprite.context.getImageData(0,0,25,25), 0, 0);

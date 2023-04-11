@@ -21,35 +21,34 @@ let mapContainer: HTMLDivElement = document.getElementById("map") as HTMLDivElem
 let image = new Image();
 let selectionDiv = new SelectionDiv();
 image.src = "sprites.png";
-
-function undo(){
+function undo() {
     console.log("undo");
     let undoMapState: MapState = mapHistory.pop();
     mapState.load(undoMapState);
 }
 
-function redo(){
+function redo() {
     console.log("redo");
     let redoMapState: MapState = mapHistory.getNext();
     mapState.load(redoMapState);
 }
 document.addEventListener("keydown", ev => {
-    if(ev.key === 'z' && ev.ctrlKey){
+    if (ev.key === 'z' && ev.ctrlKey) {
         undo();
-    }else if(ev.key === 'y' && ev.ctrlKey){
+    } else if (ev.key === 'y' && ev.ctrlKey) {
         redo();
     }
 })
 console.log("sdsdfasdfa")
 
 image.onload = function () {
-    document.addEventListener("mousedown", (ev: MouseEvent)=>{
+    document.addEventListener("mousedown", (ev: MouseEvent) => {
         selectionDiv.startSelect(ev.pageX, ev.pageY);
     })
     document.addEventListener("mousemove", (ev: MouseEvent) => {
         selectionDiv.moveTo(ev.pageX, ev.pageY);
     })
-    document.addEventListener("mouseup", (ev: MouseEvent) =>{
+    document.addEventListener("mouseup", (ev: MouseEvent) => {
         selectionDiv.endSelect();
     })
     for (let i = 0; i < 20; i++) {
@@ -85,10 +84,27 @@ image.onload = function () {
         for (let i = 0; i < mapSizeLeftRight; i++) {
             let canvas = document.createElement("canvas") as HTMLCanvasElement;
             canvas.setAttribute("willReadFrequently", "true");
+
+            canvas.addEventListener("mousedown", (event: MouseEvent) => {
+                let mapSquare = mapHistory.getCurrent().mapSquares[j][i];
+                if (!event.ctrlKey) {
+                    mapSquare.selection.deselectAll();
+                }
+                mapSquare.selection.setFirstSquare(mapSquare);
+            })
+            canvas.addEventListener("mouseup", (event: MouseEvent) => {
+                let mapSquare = mapHistory.getCurrent().mapSquares[j][i];
+                let secondSquare = mapSquare;
+                if (!event.ctrlKey) {
+                    mapSquare.selection.empty();
+                }
+                mapSquare.selection.toggleSprites(mapSquare.selection.firstSquare, secondSquare);
+            })
             canvas.width = 25;
             canvas.height = 25;
-            let context = canvas.getContext("2d", {willReadFrequently: true}) as CanvasRenderingContext2D;
+            let context = canvas.getContext("2d", { willReadFrequently: true }) as CanvasRenderingContext2D;
             mapContainer.appendChild(canvas);
+            console.log(selection)
             let tile = new MapSquare(canvas, context, i, j, selection);
             row.push(tile);
         }
