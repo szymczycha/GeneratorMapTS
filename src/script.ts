@@ -32,16 +32,34 @@ function redo() {
     let redoMapState: MapState = mapHistory.getNext();
     mapState.load(redoMapState);
 }
-document.addEventListener("keydown", ev => {
-    if (ev.key === 'z' && ev.ctrlKey) {
-        undo();
-    } else if (ev.key === 'y' && ev.ctrlKey) {
-        redo();
-    }
-})
 console.log("sdsdfasdfa")
 
 image.onload = function () {
+    let deleteCanvas = document.createElement("canvas") as HTMLCanvasElement;
+    let deleteSpriteSquare = new SpriteSquare(
+        deleteCanvas,
+        deleteCanvas.getContext("2d"),
+        -1,
+        -1,
+        selection,
+        mapHistory)
+    document.addEventListener("keydown", ev => {
+        if (ev.key === 'z' && (ev.ctrlKey || ev.metaKey)) {
+            undo();
+        } else if (ev.key === 'y' && (ev.ctrlKey || ev.metaKey)) {
+            redo();
+        } else if (ev.key === 'Delete') {
+
+            if (!selection.isEmpty()) {
+                selection.setSprites(deleteSpriteSquare);
+                selection.deselectAll();
+                mapHistory.add(new MapState(mapHistory.getCurrent()));
+                if (selection.isAutomat()) {
+                    selection.doAutomat();
+                }
+            }
+        }
+    })
     document.addEventListener("mousedown", (ev: MouseEvent) => {
         selectionDiv.startSelect(ev.pageX, ev.pageY);
     })
