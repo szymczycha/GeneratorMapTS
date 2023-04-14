@@ -66,6 +66,22 @@ function cut() {
     copy();
     deleteSquares();
 }
+function hideMenu() {
+    document.getElementById("menu").style.display = "none";
+    menuIsShown = false;
+}
+let menuIsShown = false;
+function toggleMenu() {
+    if (menuIsShown) {
+        hideMenu();
+    } else {
+        showMenu();
+    }
+}
+function showMenu() {
+    document.getElementById("menu").style.display = "flex";
+    menuIsShown = true;
+}
 function save(filename: string, type: string) {
     let imgDataArray = [] as Array<Array<Uint8ClampedArray>>
     let mapItems = mapHistory.getCurrent().mapSquares;
@@ -121,7 +137,56 @@ image.onload = function () {
         })
         mapHistory.getCurrent().load(state);
     })
+    document.addEventListener("contextmenu", (ev) => {
+        ev.preventDefault();
+        toggleMenu();
+    })
+    document.getElementById("menu").addEventListener("contextmenu", (ev) => {
+        ev.preventDefault();
+    })
+    // document.body.onclick = function (e: MouseEvent) {
+    //     e.preventDefault();
+    //     var isRightMB;
+
+    //     if ("which" in e)  // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+    //         isRightMB = e.which == 3;
+    //     else if ("button" in e)  // IE, Opera 
+    //         isRightMB = e.button == 2;
+
+    //     alert("Right mouse button " + (isRightMB ? "" : " was not") + "clicked!");
+
+
+    // }
+    document.getElementById("undo").addEventListener("click", () => {
+        undo();
+        hideMenu();
+    })
+    document.getElementById("redo").addEventListener("click", () => {
+        redo();
+        hideMenu();
+    })
+    document.getElementById("cut").addEventListener("click", () => {
+        cut();
+        hideMenu();
+    })
+    document.getElementById("copy").addEventListener("click", () => {
+        copy();
+        hideMenu();
+    })
+    document.getElementById("paste").addEventListener("click", () => {
+        paste();
+        hideMenu();
+    })
+    document.getElementById("delete").addEventListener("click", () => {
+        deleteSquares();
+        hideMenu();
+    })
+    document.getElementById("save").addEventListener("click", () => {
+        save("data.json", "application/json");
+        hideMenu();
+    })
     document.addEventListener("keydown", ev => {
+        ev.preventDefault();
         if (ev.key === 'z' && (ev.ctrlKey || ev.metaKey)) {
             undo();
         } else if (ev.key === 'y' && (ev.ctrlKey || ev.metaKey)) {
@@ -134,7 +199,8 @@ image.onload = function () {
             paste();
         } else if (ev.key === 'x' && (ev.ctrlKey || ev.metaKey)) {
             cut();
-        } else if (ev.key === 'q' && (ev.ctrlKey || ev.metaKey)) {
+        } else if (ev.key === 's' && (ev.ctrlKey || ev.metaKey)) {
+            ev.preventDefault();
             save("data.json", "application/json");
         } else if (ev.key === 'l' && (ev.ctrlKey || ev.metaKey)) {
             cut();
@@ -185,7 +251,7 @@ image.onload = function () {
 
             canvas.addEventListener("mousedown", (event: MouseEvent) => {
                 let mapSquare = mapHistory.getCurrent().mapSquares[j][i];
-                if (!event.ctrlKey) {
+                if (!event.ctrlKey && !event.metaKey) {
                     mapSquare.selection.deselectAll();
                 }
                 mapSquare.selection.setFirstSquare(mapSquare);
@@ -193,7 +259,7 @@ image.onload = function () {
             canvas.addEventListener("mouseup", (event: MouseEvent) => {
                 let mapSquare = mapHistory.getCurrent().mapSquares[j][i];
                 let secondSquare = mapSquare;
-                if (!event.ctrlKey) {
+                if (!event.ctrlKey && !event.metaKey) {
                     mapSquare.selection.empty();
                 }
                 mapSquare.selection.toggleSprites(mapSquare.selection.firstSquare, secondSquare);
