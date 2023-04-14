@@ -136,6 +136,7 @@ image.onload = function () {
             })
         })
         mapHistory.getCurrent().load(state);
+        mapHistory.add(new MapState(mapHistory.getCurrent()));
     })
     document.addEventListener("contextmenu", (ev) => {
         ev.preventDefault();
